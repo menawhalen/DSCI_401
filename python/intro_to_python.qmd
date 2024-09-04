@@ -1,0 +1,627 @@
+---
+title: "Intro to Python"
+format:
+  html:
+    self-contained: true
+editor: visual
+jupyter: python3
+---
+
+# Introduction to Python
+
+## What is Python?
+
+Python is a versatile programming language known for its readability and wide range of applications, from web development to data analysis. It's often the first choice for beginners due to its simple syntax and extensive community support.
+
+## What is Jupyter Notebook?
+
+Jupyter Notebook is an open-source web application that allows you to create and share documents that contain live code, equations, visualizations, and narrative text. It's widely used for data analysis, scientific research, and teaching.
+
+### Key Features of Jupyter Notebook:
+
+-   Interactive Coding: You can write and execute code in a step-by-step manner, making it easier to debug and understand the flow.
+
+-   Rich Media Support: Embed visualizations, equations, and images directly into your notebook.
+
+-   Markdown Support: Document your process with Markdown, making your notebook both a code and a report.
+
+## How to Get Started with Jupyter Notebook
+
+1.  Using Google Colab - Google Colab is a cloud-based platform that allows you to run Jupyter Notebooks without needing to install anything on your local machine. It's particularly convenient for beginners or those who want to avoid setup complexities.
+
+-   Steps to Access Google Colab:
+
+    -   Go to Google Colab.
+
+    -   Sign in with your Google account.
+
+    -   Click on "New Notebook" to create a new Python notebook.
+
+You can also open existing notebooks from Google Drive or GitHub. The link to this class will be here <https://drive.google.com/drive/folders/1ZHHsE8A2g6jWPgRp9egUptGd5nBpFBHQ?usp=drive_link>
+
+2.  Installing Jupyter Notebook Locally (Optional) If you prefer to work locally, you can install Jupyter Notebook on your machine.
+
+-   Install via Anaconda: Download and install Anaconda from the official website. Launch Anaconda Navigator from your Start menu (Windows) or Applications folder (Mac). In Anaconda Navigator, click "Launch" under Jupyter Notebook.
+
+-   Install via pip: Ensure Python is installed on your system (Python 3.x is recommended). Open a terminal or command prompt. Run the command: pip install notebook Start Jupyter Notebook by typing jupyter notebook in the terminal.
+
+3.  Starting Jupyter Notebook Locally After installation, open Anaconda Navigator and click "Launch" under Jupyter Notebook. Alternatively, open a terminal and run jupyter notebook. This will open Jupyter in your web browser.
+
+4.  Creating a New Notebook In Jupyter Notebook (either via Google Colab or locally), click "New" and select "Python 3" to create a new notebook.
+
+5.  Recommended Workflow
+
+-   Organization: Keep your work organized by creating folders for each project.
+
+-   Saving Work: Save your notebook frequently with Ctrl + S or Cmd + S.
+
+-   Using Markdown: Use Markdown cells to document your code and explain your analysis.
+
+-   Shortcuts: Get familiar with Jupyter shortcuts like Shift + Enter to run cells.
+
+# Packages
+
+In Python, **packages** are collections of modules that provide additional functionality and tools, making it easier to perform specific tasks without having to write code from scratch. A package typically contains various functions, classes, and variables that you can use directly by importing the package into your Python script.
+
+## Installing Python Packages in RStudio
+
+When working with Python in RStudio, you might need to install additional packages to run your Python code smoothly. Here’s how you can install Python packages directly from RStudio:
+
+### Using the Terminal
+
+1.  **Open the Terminal**:
+
+    -   Go to the "Terminal" tab in RStudio, which allows you to run shell commands.
+
+2.  **Install the Package**:
+
+    -   You can install Python packages using `pip`, the package installer for Python. For example, to install the `numpy` package, you would run: `pip install numpy`
+
+    -   If you need to install multiple packages: `pip install numpy pandas matplotlib math`
+
+### Using a Python Code Chunk in Quarto
+
+If you want to include the package installation directly in your Quarto document, you can add a Python code chunk to install the necessary packages:
+
+```{python}
+#| echo: false
+#| warning: false
+!pip install numpy pandas math
+
+```
+
+### Using the reticulate Package in RStudio
+
+The `reticulate` package allows you to integrate Python code within your R sessions. This can be incredibly useful when you want to leverage Python's extensive libraries and combine them with R's capabilities.
+
+#### Installing the `reticulate` Package
+
+If you haven't installed the `reticulate` package yet, you can do so by running the following command in your R console: `install.packages("reticulate")`
+
+#### Using `reticulate::repl_python()`
+
+The `reticulate::repl_python()` function allows you to enter a Python interactive session directly within RStudio. This means you can write and execute Python code without leaving your R session.
+
+Here’s how to use it:
+
+1.  **Load the `reticulate` Package**:
+
+    Before you can use `reticulate`, ensure that the package is loaded: `library(reticulate)`
+
+2.  **Start a Python REPL Session**:
+
+    You can start a Python session within RStudio by using the following command: `reticulate::repl_python()`
+
+After running this command, you will see the Python prompt (`>>>`) in your R console, indicating that you are now in a Python session.
+
+3.  **Run Python Code**:
+
+    Once in the Python REPL, you can execute Python code just as you would in a standard Python environment.
+
+4.  **Exit the Python Session**:
+
+    To return to your R session, you can simply type `exit` or press `Ctrl + D`.
+
+Here are some commonly used packages:
+
+-   **`math`**: This package provides mathematical functions and constants, such as `sqrt` for square roots, `sin` for sine functions, and `pi` for the constant π.
+
+-   **`numpy`**: Short for Numerical Python, this package is essential for scientific computing. It offers support for large, multi-dimensional arrays and matrices, along with a wide variety of mathematical functions to operate on these arrays.
+
+-   **`pandas`**: This package is widely used for data manipulation and analysis. It allows for easy handling of structured data through its powerful data structures like DataFrames, which are similar to tables in a database or Excel spreadsheet.
+
+```{python}
+# Importing necessary packages
+import math  # Math functions like sqrt, sin, etc.
+import numpy as np  # For array and matrix operations
+import pandas as pd  # For working with data frames
+
+```
+
+# File Types and Comments in Python
+
+## Understanding File Types
+
+In Python, working with different file formats is a common task, especially when dealing with data analysis and storage. Here are some of the most common file types you might encounter:
+
+-   **CSV Files**:
+
+    -   CSV (Comma-Separated Values) files are plain text files used to store tabular data. They are widely used because they are simple and can be easily read and written by both humans and machines.
+
+    -   Example operations include reading a CSV file into a DataFrame and saving a DataFrame to a CSV file.
+
+-   **JSON Files**:
+
+    -   JSON (JavaScript Object Notation) files are used to store and exchange data in a lightweight and human-readable format. JSON is often used for transmitting data in web applications.
+
+    -   Python allows you to easily read data from a JSON file and write data back into it.
+
+-   **Pickle Files**:
+
+    -   Pickle is a Python-specific format used to serialize and deserialize Python objects. This format is useful for saving complex data structures like DataFrames or custom Python objects, so they can be easily loaded back into your program later.
+
+Here’s an illustrative example in Python (written as comments for explanation):
+
+```{python}
+'''
+# Example: Reading and writing files in Python
+
+# CSV files
+df = pd.read_csv('file.csv')  # Read data from a CSV file into a DataFrame
+df.to_csv('output.csv')  # Write the DataFrame to a CSV file
+
+# JSON files
+data = pd.read_json('data.json')  # Read data from a JSON file into a DataFrame
+data.to_json('output.json')  # Write the DataFrame to a JSON file
+
+# Pickle files (for saving Python objects)
+df.to_pickle('data.pkl')  # Save the DataFrame to a pickle file
+df = pd.read_pickle('data.pkl')  # Load the DataFrame from a pickle file
+'''
+
+```
+
+# Comments in Python
+
+Comments are an essential part of any programming language, and Python is no exception. They are used to explain the code, making it easier to understand for others (or for yourself when you come back to it later). Python supports two types of comments:
+
+-   **Single-line Comments**:
+
+    -   These begin with a `#` symbol and continue until the end of the line. They are used for brief explanations or annotations within the code.
+
+    -   Example: `# This is a single-line comment`
+
+-   **Multi-line Comments**:
+
+    -   Although Python doesn’t have a specific syntax for multi-line comments, a common practice is to use triple quotes (`''' or """`) to comment out multiple lines of code. This can be useful when you want to temporarily disable a block of code or provide a detailed explanation.
+
+```{python}
+# This is a single-line comment
+
+'''
+This is a multi-line comment
+It can span several lines
+'''
+```
+
+# Assignment and Variable Types in Python
+
+## Understanding Variable Assignment
+
+In Python, variables are used to store data that can be used and manipulated throughout your code. You don’t need to declare the type of a variable explicitly, as Python is a dynamically typed language, meaning it infers the type based on the value assigned to the variable.
+
+### Example of Variable Types
+
+Here’s an example that demonstrates how Python handles different variable types:
+
+```{python}
+# You do not HAVE to declare types in Python
+# But you can. This may help to avoid problems later on.
+
+height = 442  # 'height' is an integer (int)
+print(type(height))  # Output: <class 'int'>
+
+height = 442.0  # 'height' is now a floating-point number (float)
+print(type(height))  # Output: <class 'float'>
+
+height = 'really tall'  # 'height' is now a string (str)
+print(type(height))  # Output: <class 'str'>
+
+```
+
+In the above example, the variable `height` changes its type based on the value assigned to it. Python allows you to reassign variables to different types without any issues.
+
+### String Variables and Their Use
+
+Python supports various ways to create and manipulate strings:
+
+```{python}
+a = 'Yes'
+b = "Yup"
+c = '''
+If you're happy and you know it 
+clap your hands.
+Clap your hands.'''
+
+print(a)  # Output: Yes
+print(b)  # Output: Yup
+print(c)  # Output: The multi-line string
+
+```
+
+Here, the variables `a`, `b`, and `c` are all strings, even though they are created using different quote styles (`'`, `"`, and `'''`). Python supports single, double, and triple quotes for string creation. Triple quotes are particularly useful for multi-line strings.
+
+### Importance of Spaces and Case Sensitivity
+
+In Python, spacing inside strings and the case of variable names matter:
+
+```{python}
+# Space outside quotes doesn't matter
+a = "Yes"  # This is the same as a ="Yes"
+
+# Space INSIDE quotes DOES matter
+a = "Yes"  # This is NOT the same as a = " Yes"
+
+# Python is case-sensitive! These are all different variables
+name = 'Wakko'
+Name = 'Yakko'
+NAME = 'Dot'
+
+```
+
+Here, `name`, `Name`, and `NAME` are considered different variables because Python is case-sensitive. Additionally, spacing within strings is important, as it affects how the string is stored and displayed.
+
+### Printing Variables and Text
+
+The `print()` function in Python is used to display text and variables:
+
+```{python}
+# Use print to display a single line of text.
+print('Hello', name)  # Output: Hello Wakko
+print('Hello', Name)  # Output: Hello Yakko
+print('Hello', NAME)  # Output: Hello Dot
+
+# Language statements like 'print' are ALWAYS lowercase
+print("Hello World")  # Correct usage
+# PRINT("Hello World")  # This would cause an error
+
+# The default separator in print is a space.
+print(name, Name, NAME)  # Output: Wakko Yakko Dot
+print('Your name is', NAME)  # Output: Your name is Dot
+
+# Removing spaces between words in the output
+print(name, Name, NAME, sep="")  # Output: WakkoYakkoDot
+
+```
+
+The `print()` function can take multiple arguments and by default, separates them with a space. You can customize the separator using the `sep` parameter, as shown in the last example.
+
+By understanding how to assign variables, the significance of spacing and case, and how to print text and variables, you’ll be able to write more effective and readable Python code.
+
+# Values in Python
+
+## Numbers in Python
+
+Python supports four main types of numbers: Booleans, Integers, Floating-point numbers, and Complex numbers. Each type is used for different kinds of numerical operations and holds specific properties.
+
+### Booleans
+
+Booleans are a simple data type in Python that can hold one of two values: `True` or `False`. These values are useful in logical operations and control flow.
+
+```{python}
+# Booleans
+a = True
+b = False
+
+# True evaluates as 1 and False as 0
+c = 4 + True  # Adds 1 to 4, because True is equivalent to 1
+print('c =', c)  # Output: c = 5
+
+d = 0
+if d == False:  # Checking if 'd' is equivalent to False
+  print('d is False')  # Output: d is False
+
+```
+
+Booleans can be combined with other data types, such as integers, and used in logical comparisons.
+
+### Integers
+
+Integers are whole numbers, both positive and negative, including zero. They are of arbitrary size in Python, meaning they can grow as large as your memory allows.
+
+```{python}
+# Integers
+a = 37
+b = -29875486231854477
+c = 0x7fa8  # Hexadecimal representation
+d = 0b1000001111  # Binary representation
+
+# Python supports both small and large integer values
+print(a, b, c, d)  # Output: 37 -29875486231854477 32680 527
+
+```
+
+### Integer Operations
+
+Python provides various operators and functions to perform arithmetic operations on integers. These operations are fundamental to many programming tasks.
+
+#### Common Integer Operations:
+
+-   **"+" : Sum**\
+    Adds two numbers together.
+
+-   **"-" : Difference**\
+    Subtracts one number from another.
+
+-   **"\*" : Product**\
+    Multiplies two numbers together.
+
+-   **"/" : Quotient**\
+    Divides one number by another. The result is a floating-point number.
+
+-   **"//" : Floored Quotient**\
+    Divides one number by another and rounds down to the nearest integer.
+
+-   **"%" : Remainder (Modulus)**\
+    Returns the remainder of a division operation.
+
+-   **`abs(x)` : Absolute Value**\
+    Returns the absolute (non-negative) value of `x`.
+
+-   **`int(x)` : Convert to Integer**\
+    Converts a number or string to an integer.
+
+-   **`float(x)` : Convert to Float**\
+    Converts a number or string to a floating-point number.
+
+-   **`complex(re, im)` : Complex Number**\
+    Creates a complex number with real part `re` and imaginary part `im`.
+
+-   **`c.conjugate()` : Conjugate of Complex Number `c`**\
+    Returns the complex conjugate of the number `c`.
+
+-   **`divmod(x, y)` : Pair of `x // y` and `x % y`**\
+    Returns a tuple containing the floored quotient and the remainder.
+
+-   **`pow(x, y)` : `x` to the Power of `y`**\
+    Raises `x` to the power `y`.
+
+-   **`x ** y` : `x` to the Power of `y`**\
+    Another way to raise `x` to the power `y`.
+
+```{python}
+# Integer operations
+print("5 + 4 =", 5 + 4)  # Sum: Output 5 + 4 = 9
+print("5 - 4 =", 5 - 4)  # Difference: Output 5 - 4 = 1
+print("5 * 4 =", 5 * 4)  # Product: Output 5 * 4 = 20
+print("5 / 4 =", 5 / 4)  # Quotient: Output 5 / 4 = 1.25
+print("5 // 4 =", 5 // 4)  # Floored quotient: Output 1
+print("5 % 4 =", 5 % 4)  # Remainder: Output 1
+print("abs(-5) =", abs(-5))  # Absolute value: Output 5
+print("int(3.14) =", int(3.14))  # Convert to integer: Output 3
+print("float(5) =", float(5))  # Convert to float: Output 5.0
+
+# Complex number and conjugate
+c = complex(1, 3)
+print("Complex number:", c)  # Output: (1+3j)
+print("Conjugate:", c.conjugate())  # Output: (1-3j)
+
+# Power and divmod operations
+print("2^3 =", pow(2, 3))  # Power: Output 2^3 = 8
+print("2^3 =", 2 ** 3)  # Power (alternative syntax): Output 2^3 = 8
+print("divmod(12, 5) =", divmod(12, 5))  # Output: (2, 2)
+
+```
+
+### Comparisons
+
+Python allows you to compare values using comparison operators like `>`, `<`, `>=`, `<=`, and `!=`. These comparisons are often used in conditional statements.
+
+```{python}
+# Comparisons
+a = 1
+b = 2
+c = 3
+if b >= a and b <= c: 
+  print('b is between a and c')  # Output: b is between a and c
+
+```
+
+You can also combine logical conditions using `and`, `or`, and `not` operators but I do not recommend.
+
+### Floating Point
+
+Floating-point numbers are used to represent real numbers that include decimal points. They can be written using decimal notation or exponential notation.
+
+```{python}
+# Floating point
+a = 37.5
+b = 4e5  # Exponential notation (equivalent to 400000.0)
+c = 1.34e-10
+print('a =', a)  # Output: a = 37.5
+print('b =', b)  # Output: b = 400000.0
+print('c =', c)  # Output: c = 1.34e-10
+
+```
+
+Floating-point numbers are not always exact, due to the way they are stored in memory.
+
+```{python}
+# Floating point precision
+a = 2.1 + 4.1
+print(a == 6.3)  # Output: False
+print(a)  # Output: 6.300000000000001
+
+```
+
+Python provides many functions in the `math` module to work with floating-point numbers, including square roots, trigonometric functions, and logarithms.
+
+```{python}
+# import math
+
+x = 4
+print(math.sqrt(x))  # Square root: Output 2.0
+print(math.sin(x))  # Sine of x: Output -0.7568024953079282
+print(math.log(2))  # Natural log of 2: Output 0.6931471805599453
+
+```
+
+### Type Conversion
+
+Python allows you to convert between different types of numbers using built-in functions like `int()`, `float()`, and `complex()`.
+
+```{python}
+# Type conversion
+x = 5.0
+print(x)  # Output: 5.0
+print(type(x))  # Output: <class 'float'>
+
+a = int(x)  # Convert to integer
+print(a)  # Output: 5
+print(type(a))  # Output: <class 'int'>
+
+b = float(a)  # Convert back to float
+print(b)  # Output: 5.0
+print(type(b))  # Output: <class 'float'>
+
+pi = '3.141519'
+a = float(pi)  # Convert string to float
+print(a)  # Output: 3.141519
+print(type(a))  # Output: <class 'float'>
+
+```
+
+# Data Structures
+
+Python offers a variety of data structures that allow you to store and manipulate data efficiently. Here are some of the most commonly used data structures:
+
+#### 1. Lists
+
+A list is an ordered collection of items, which can be of different types. Lists are mutable, meaning that you can change their contents.
+
+**Example:**
+
+```{python}
+# Creating a list
+my_list = [1, 2, 3, 4, 5]
+
+# Accessing elements
+print(my_list[0])  # Output: 1
+
+# Modifying elements
+my_list[0] = 10
+
+# Adding elements
+my_list.append(6)
+
+# Removing elements
+my_list.remove(3)
+
+# Slicing lists
+print(my_list[1:3])  # Output: [2, 4]
+
+```
+
+#### 2. Tuples
+
+A tuple is similar to a list, but it is immutable, meaning once it's created, it cannot be modified. Tuples are often used for storing a collection of items that should not change.
+
+**Example:**
+
+```{python}
+# Creating a tuple
+my_tuple = (1, 2, 3)
+
+# Accessing elements
+print(my_tuple[1])  # Output: 2
+
+# Tuples are immutable
+# my_tuple[1] = 4  # This will raise an error
+
+```
+
+#### 3. Dictionaries
+
+A dictionary is an unordered collection of key-value pairs. It is used to store data values like a map, where each key is unique.
+
+**Example:**
+
+```{python}
+# Creating a dictionary
+my_dict = {"name": "Alice", "age": 25, "city": "New York"}
+
+# Accessing elements
+print(my_dict["name"])  # Output: Alice
+
+# Modifying elements
+my_dict["age"] = 26
+
+# Adding new key-value pairs
+my_dict["email"] = "alice@example.com"
+
+# Removing elements
+del my_dict["city"]
+
+# Iterating through a dictionary
+for key, value in my_dict.items():
+    print(key, value)
+
+```
+
+#### 4. Sets
+
+A set is an unordered collection of unique elements. Sets are used when membership testing and eliminating duplicates are required.
+
+**Example:**
+
+```{python}
+# Creating a set
+my_set = {1, 2, 3, 4, 5}
+
+# Adding elements
+my_set.add(6)
+
+# Removing elements
+my_set.remove(2)
+
+# Set operations
+another_set = {4, 5, 6, 7}
+union_set = my_set.union(another_set)  # {1, 3, 4, 5, 6, 7}
+intersection_set = my_set.intersection(another_set)  # {4, 5, 6}
+
+```
+
+#### 5. Data Frames (using `pandas`)
+
+A DataFrame is a 2-dimensional labeled data structure with columns that can be of different types. It is similar to a table in a database or an Excel spreadsheet. DataFrames are part of the `pandas` library.
+
+**Example:**
+
+```{python}
+import pandas as pd
+
+# Creating a DataFrame
+data = {
+    "Name": ["Alice", "Bob", "Charlie"],
+    "Age": [25, 30, 35],
+    "City": ["New York", "Los Angeles", "Chicago"]
+}
+
+df = pd.DataFrame(data)
+
+# Accessing columns
+print(df["Name"])  # Output: Series with names
+
+# Accessing rows
+print(df.iloc[0])  # Output: First row as a Series
+
+# Adding a new column
+df["Email"] = ["alice@example.com", "bob@example.com", "charlie@example.com"]
+
+# Removing a column
+df.drop("City", axis=1, inplace=True)
+
+# Displaying the DataFrame
+print(df)
+
+```
