@@ -1,0 +1,189 @@
+---
+title: "Functions and Loops"
+format:
+  html:
+    self-contained: true
+editor: visual
+jupyter: python3
+---
+
+## File Pathways
+
+Computers require exact file locations to process and retrieve data. A file pathway in Python directs the program to the correct location of a file.
+
+-   **Absolute Pathway:** The complete pathway from the root of your computer’s file system. Examples "C:/Users/YourUsername/Documents/data/file.csv"
+
+-   **Relative Pathway:** Pathway relative to your current working directory. Example "data/file.csv"
+
+**Working Directory**\
+Python uses the `os` module to manage working directories.
+
+```{python}
+import os
+
+# Check current working directory
+os.getcwd()
+
+# Set a new working directory
+# os.chdir("path/to/your/new/directory")
+
+```
+
+## Conditional Statements and Loops
+
+### Increment and Assignment
+
+In Python, you can use `+=` to increment variables directly. It is shorthand for writing `x = x + 1`.
+
+```{python}
+#x = x + 1 thsi is equivalent to x += 1
+
+#Loops!
+x = 1
+print(x)
+x += 1
+print(x)
+x += 1
+print(x)
+```
+
+## While Loops
+
+While loops execute a block of code as long as a condition remains true.
+
+```{python}
+#Note the indentations!
+x = 1
+while x <= 100:
+  print(x)
+  x +=1
+
+print("Last x is",x)
+```
+
+Another example with non-integer multiplication:
+
+```{python}
+x = 1
+while x < 5:
+  print('Hello')
+  x *= 2
+
+print("last value of x",x)
+```
+
+Using multiple variables:
+
+```{python}
+#Need to be consistent with indentation
+#What do we need to do to make this work?
+a = 1
+b = 1
+c = 10
+while a*b < c:
+  print(a, b, a*b)
+  print(c)
+  a = a*2 #alternatively a *= 2
+```
+
+## For Loops
+
+For loops are useful when you want to iterate through a sequence or range of values.
+
+```{python}
+# Looping through a list of numbers
+for i in [1,4,7]:
+  print(2*i)
+  
+  
+  ## using range()
+  #For loops
+for i in range(1,10):
+  print(i)
+  
+  #For loops
+for i in range(10):
+  print(i)
+```
+
+## Conditional Statements
+
+**If Statements** allow you to execute a block of code only if a condition is true.
+
+**If-Else Statements** provide an alternative block of code when the condition is false.
+
+**Nested If Statements** allow you to check multiple conditions in sequence.
+
+```{python}
+#Conditional Statements
+#If
+sky = "sunny"
+if sky == "sunny":
+  print('Leave your umbrella at home!')
+  
+#What will be printed out?
+sky = "cloudy"
+if sky == "sunny":
+  print('Leave your umbrella at home!')
+  
+#If Else
+#Every else must have an if. 
+sky = 'cellphone'
+if sky == 'sunny':
+  print('Leave your umbrella at home!')
+else:
+  print('Better bring your umbrella')
+  
+#Nested
+#If and else 
+sky = "sunny"
+if sky == "sunny":
+  print('Leave your umbrella at home!')
+else: 
+  if sky == "cloudy":
+    print('Better bring your umbrella')
+  else:
+    if sky == "snowing":
+      print("Grab your parka")
+    else: 
+      print("Your guess is as good as mine!")
+
+
+#What will be printed
+#elif makes this easier
+sky = "sunny"
+if sky == "sunny":
+  print('Leave your umbrella at home!')
+elif sky == "cloudy":
+  print('Better bring your umbrella')
+elif sky == "snowing":
+  print("Grab your parka")
+else: 
+  print("Your guess is as good as mine!")
+```
+
+## Functions
+
+Functions allow you to group code and reuse it easily. Here's a simple function to find the maximum between two numbers:
+
+```{python}
+def get_max_value(a,b):
+  if a>b:
+    return a
+  else: 
+    return b
+
+#These both work
+print("Maximum value is",get_max_value(4,5))
+print("Maximum value is " + str(get_max_value(4,5)))
+```
+
+# Exercise 1
+
+The height of a lego brick is 9.6 mm. We want to build a tower at a height closest to x m.(Remember 1000 mm in a m.)
+
+Imagine your starter code is: x=3 \# I want to build a tower that is \~ 3 m high
+
+1.  Write a statement to calculate how many bricks are needed.
+
+2.  Write code using a while loop to calculate the number of bricks needed.

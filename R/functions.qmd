@@ -1,0 +1,203 @@
+---
+title: "Functions and Loops"
+format:
+  html:
+    self-contained: true
+editor: visual
+---
+
+## File Pathways
+
+Computers are not as smart as you think and you have to tell it exactly what you want it to do and exactly where to look for things.
+
+A file pathway is like a roadmap that guides R to locate your data files on your computer. It's similar to giving directions to someone using street names and landmarks. There are two main types of file pathways:
+
+-   Absolute Pathway: This is the complete pathway starting from the root directory of your computer. It's like giving GPS coordinates for a location.
+
+Example: "C:/Users/YourUsername/Documents/data/file.csv"
+
+-   Relative Pathway: This is the pathway relative to the current *working directory* in R. It's like giving directions based on your current location.
+
+Example: "data/file.csv"
+
+### Working Directory
+
+The working directory is the location on your computer where R is currently operating. When you read or write files, R will look for them in this directory by default. This makes it important to set your working directory to the right location, especially when working with data files.
+
+You can use the `getwd()` function to check your current working directory, and the `setwd()` function to set a new working directory.
+
+```         
+# Check the current working directory getwd()  # Set a new working directory setwd("path/to/your/new/directory")
+```
+
+### Organizing Data:
+
+It's a good practice to organize your data in a separate folder within your R project. This keeps things tidy and helps avoid confusion.
+
+-   Working in Projects: When you are working in a project the working directory is set for you where the project is located on your computer.
+
+-   Create a Data Folder: In your R project directory, create a folder named "data" to store your datasets.
+
+-   Place Data Files: Put your dataset files (CSV, Excel, etc.) inside the "data" folder.
+
+## Loops and Conditional Statements
+
+### For Loops
+
+A for loop is a fundamental programming construct that allows you to repeat a block of code a specified number of times. It's especially useful when you need to perform the same operation multiple times or iterate over a sequence of elements, such as elements in a list, vector, or data frame.
+
+The basic structure of a for loop looks like this:
+
+```         
+  for (variable in sequence) {
+    # code to be executed in each iteration
+  }
+```
+
+Here's a breakdown of the components:
+
+-   variable: This is a variable that takes on each value in the sequence during each iteration of the loop.
+-   sequence: This defines the range or collection of values that the loop will iterate over. It could be a sequence of numbers (1:10), a vector, a list, or any other iterable data structure.
+
+The code block within the curly braces {} contains the operations you want to perform in each iteration of the loop.
+
+Examples of for loops
+
+```{r loops}
+# Consecutive indexes
+for (i in 1:10){
+  print(i)
+}
+
+for (i in 10:1){
+  print(i)
+}
+
+# Don't need to be consecutive!
+for (i in c(2, 3, 5, 7, 11)){
+  print(i)
+}
+
+## Doesn't have to be a number can be a vector of strings
+for (i in c("mike", "mary", "tom", "sue")){
+  print(i)
+}
+
+```
+
+### Conditional Statements
+
+Conditional statements are an essential part of programming that allow you to control the flow of your code based on certain conditions. In R, there are primarily three ways to implement conditional statements: `if`, `if else`, and the `ifelse()` function.
+
+#### If Statements
+
+The if statement allows you to execute a block of code only if a given condition is true.
+
+```{r if}
+sky <- "sunny"
+if (sky == "sunny"){
+  print("Leave your umbrella at home!")
+}
+
+sky <- "cloudy"
+if (sky == "sunny"){
+  print("Leave your umbrella at home!")
+}
+
+```
+
+#### If-Else Statements
+
+The if else statement extends the if statement to execute different blocks of code based on whether a condition is true or false.
+
+```{r if_else}
+number <- -3
+
+if (number > 0) {
+  print("The number is positive.")
+} else if (number < 0) {
+  print("The number is negative.")
+} else {
+  print("The number is zero.")
+}
+```
+
+#### Ifelse Function
+
+This is for when you want to use if else statements repeatedly to return a vector.
+
+```{r ifelse}
+numbers <- c(-2, 3, 0, -5, 7)
+positive_indicator <- ifelse(numbers > 0, "Positive", "Not Positive")
+print(positive_indicator)
+
+```
+
+## Functions
+
+### Why Build Functions?
+
+Functions are the building blocks of code. Just as we break down tasks into smaller steps in everyday life, functions break down complex coding tasks into manageable units. But why should we bother with building your own functions when so many others exist?
+
+-   Modularity: Functions help us organize code by grouping related actions together. This makes our code more structured, easier to read, and simpler to maintain.
+
+-   Reusability: Once you've built a function to perform a specific task, you can use it as many times as you need without rewriting the same code. This not only saves time but also reduces the chances of errors.
+
+-   Efficiency: Functions promote efficient code development by enabling us to focus on solving specific problems without getting bogged down in larger program logic.
+
+-   Debugging: When an error occurs, functions help narrow down the problematic part of the code, making it easier to identify and fix issues.
+
+### Function Syntax
+
+At its core, a function is a self-contained block of code designed to perform a specific task. Like a recipe, a function takes in ingredients (inputs or arguments) and produces a result (output). Let's break down the basic structure of a function in R:
+
+```         
+# Defining a Function
+function_name <- function(argument1, argument2, ...) {
+  # Code to perform the task
+  return(result)
+}
+```
+
+-   function_name: Choose a meaningful name for your function, describing what it does.
+-   argument1, argument2, ...: These are placeholders for the values (arguments) that the function will work with.
+-   return(result): After performing the task, the function uses the return statement to provide the result.
+
+```{r basic_func}
+
+## find the max between two numbers
+## takes in two number inputs
+find_max <- function(a, b) {
+  if (a > b) {
+    return(a)
+  } else {
+    return(b)
+  }
+}
+
+find_max(1,2)
+find_max(5,3)
+
+## checks even or odd
+## take in one number as the input
+check_even_odd <- function(num) {
+  if (num %% 2 == 0) {
+    return("Even")
+  } else {
+    return("Odd")
+  }
+}
+
+check_even_odd(71)
+check_even_odd(51)
+```
+
+## Exercise! 
+
+The height of a lego brick is 9.6 mm. We want to build a tower at a height closest to x m.(Remember 1000 mm in a m.)
+
+Imagine your starter code is: x=3 \# I want to build a tower that is \~ 3 m high
+
+1.  Write a statement to calculate how many bricks are needed.
+2.  Write code using a while loop to calculate the number of bricks needed.
+3.  Challenge: Can you add an argument to the function that will allow you to return a any unit you want.
