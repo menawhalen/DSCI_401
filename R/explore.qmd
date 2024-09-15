@@ -1,0 +1,213 @@
+---
+title: "Data Explore in R"
+format:
+  html:
+    self-contained: true
+editor: visual
+---
+
+## Introduction
+
+In this document, we will cover key techniques for indexing, selecting, and manipulating data in **R**. We will explore **vectors**, **lists**, and **data frames** and discuss how these are similar to Python's **Pandas** structures.
+
+------------------------------------------------------------------------
+
+## Vectors in R
+
+### Creating Vectors
+
+You can create vectors in R using the `c()` function. Vectors are analogous to **Series** in Pandas.
+
+```{r}
+# Creating a numeric vector
+vec <- c(0.25, 0.5, 0.75, 1)
+vec
+```
+
+### Accessing Elements
+
+In R, you can access elements in a vector using square brackets `[]`.
+
+```{r}
+# Accessing elements
+vec[1]   # Accessing the first element
+vec[2:3] # Accessing a range of elements
+
+```
+
+### Named Vectors
+
+Vectors can also have named elements, which is similar to using an index in a Pandas **Series**.
+
+```{r}
+# Creating a named vector
+vec_named <- c(a = 0.25, b = 0.5, c = 0.75, d = 1)
+vec_named['b'] # Accessing element by name
+
+```
+
+### Modifying Vectors
+
+You can modify or extend vectors in R by assigning new values.
+
+```{r}
+# Modifying and extending a vector
+vec_named['e'] <- 1.25
+vec_named
+
+```
+
+## Lists in R
+
+### Creating Lists
+
+Lists in R can contain elements of different types, and are somewhat analogous to dictionaries or more complex Pandas **Series**.
+
+```{r}
+# Creating a list
+my_list <- list(name = "Alice", age = 25, scores = c(90, 85, 88))
+my_list
+
+```
+
+### Accessing Elements in a List
+
+You can access list elements by name or position using `$` or `[[ ]]`.
+
+```{r}
+# Accessing list elements
+my_list$name          # Using $
+my_list[['scores']]   # Using double brackets for indexing
+my_list[[3]]          # Accessing by position
+
+```
+
+## Data Frames in R
+
+### Creating Data Frames
+
+Data frames in R are two-dimensional data structures, similar to Pandas **DataFrames**. You can create them using the `data.frame()` function.
+
+```{r}
+# Creating a data frame
+area_df <- data.frame(state = c("California", "Texas", "New York", "Florida", "Illinois"),
+                      area = c(423967, 695662, 141297, 170312, 149995))
+area_df
+
+```
+
+### Accessing Columns
+
+You can access columns in a data frame using `$` or square brackets.
+
+```{r}
+# Accessing a column
+area_df$state   # Using $
+area_df['area'] # Using square brackets
+
+```
+
+### Adding a Column
+
+You can easily add new columns to a data frame.
+
+```{r}
+# Adding a column for population
+population <- c(38332521, 26448193, 19651127, 19552860, 12882135)
+area_df$population <- population
+area_df
+
+```
+
+### Data Frame Operations
+
+R provides simple ways to perform operations on data frames. For example, you can calculate the population density.
+
+```{r}
+# Calculating population density
+area_df$density <- area_df$population / area_df$area
+area_df
+
+```
+
+## Indexing and Selection
+
+### Subsetting Data Frames
+
+You can subset data frames using row and column indices.
+
+```{r}
+# Subsetting rows and columns
+area_df[1:3, c('state', 'population')]
+
+```
+
+### Logical Indexing
+
+Logical conditions can be used to filter data.
+
+```{r}
+# Filtering rows based on conditions
+subset(area_df, density > 100)
+
+```
+
+## Factors in R
+
+### Creating Factors
+
+Factors are used to represent categorical data in R.
+
+```{r}
+# Creating a factor
+region <- factor(c("West", "South", "East", "South", "Midwest"))
+region
+
+```
+
+### Levels of a Factor
+
+Factors have a predefined set of levels.
+
+```{r}
+# Accessing levels
+levels(region)
+
+```
+
+### Reordering Factor Levels
+
+You can reorder the levels of a factor to suit your analysis or visualization needs.
+
+```{r}
+# Reordering levels
+region <- factor(region, levels = c( "Midwest","East", "South", "West"))
+region
+
+```
+
+You can also reorder levels based on frequency or another logical condition.
+
+```{r}
+# Reordering based on frequency
+region <- factor(region, levels = levels(region)[order(table(region))])
+region
+
+```
+
+## Reading CSV Files
+
+### Reading Data from CSV
+
+You can use the `read.csv()` function in R to load data from a CSV file, similar to `pd.read_csv()` in Pandas.
+
+```{r}
+# Reading in a CSV file
+cubs_data <- read.csv("../data/cubs_all_time.csv")
+head(cubs_data)
+
+```
+
+### Exploring the Data
+
+Once you've loaded the data, you can explore it with functions like `head()`, `summary()`, and `str()` .
