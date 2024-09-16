@@ -37,3 +37,18 @@ area_df[area_df$density > 100, ]
 area_df[area_df$density > 100, "state"]
 
 subset(area_df, density > 100)
+
+
+
+str(cubs)
+
+
+cubs$W
+cubs$W == max(cubs$W)
+cubs[cubs$W == max(cubs$W), ]
+
+
+## win percentage
+
+cubs$win_perc <- cubs$W / cubs$G
+cubs[cubs$win_perc == max(cubs$win_perc),]
