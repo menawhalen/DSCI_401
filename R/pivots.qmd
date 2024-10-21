@@ -1,0 +1,118 @@
+---
+title: "Pivoting adn Tidy Data"
+format:
+  html:
+    self-contained: true
+editor: visual
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Tidy Data
+
+Tidy data is a concept popularized by Hadley Wickham, and it refers to a specific way of organizing data tables in a tabular format to facilitate data analysis. In tidy data:
+
+-   Each variable forms a column.
+-   Each observation forms a row.
+
+# Pivots
+
+Data often comes in various formats, and its structure might not be ideal for the task at hand. Pivoting helps you reorganize your data to a format that makes it easier to analyze, visualize, or model. For example, you might need to pivot data to:
+
+-   Perform Aggregations: Pivoting can simplify data aggregation and summary calculations. You can consolidate multiple columns into one and apply functions like mean, sum, etc.
+
+-   Create Visualizations: Some visualizations require specific data structures. Pivoting can help organize data to generate meaningful visualizations like time series plots, heatmaps, or faceted graphs.
+
+-   Fit Models: Certain modeling techniques might require data in a specific shape. Pivoting can help transform data into a format suitable for predictive modeling or statistical analysis.
+
+## Reshaping Data
+
+```{r}
+library(mdsr)
+library(tidyverse)
+BP_wide <- data.frame(subject = c("BHO","GWB","WJC"),
+                      before = c(160,120, 105),
+                      after = c(115, 135, 145))
+#in wide format
+BP_wide
+```
+
+```{r}
+#In long format
+BP_narrow <- data.frame(subject =  c("BHO","GWB","WJC","BHO","GWB","WJC"),
+                      when = c(rep("before",3),rep("after",3)),
+                     sbp = c(160,120,105,115,135,145))
+BP_narrow                
+```
+
+## Pivoting wider
+
+The `pivot_wider()` function is used to convert data from a long format to a wide format. It's useful when you want to take distinct values from a column and spread them across new columns.
+
+```         
+pivot_wider(data, names_from, values_from)
+```
+
+-   data: The input data frame.
+-   names_from: The column that contains the unique values to be transformed into column names in the wide format.
+-   values_from: The column that contains the values to be spread across the new wide-format columns.
+
+```{r}
+BP_narrow %>% 
+  pivot_wider(names_from = when, values_from = sbp)
+```
+
+## Pivoting longer
+
+The `pivot_longer()` function is used to convert data from a wide format (with multiple columns) into a long format (fewer columns). It's particularly useful when you have variables spread across different columns and you want to stack them into a single column, often with corresponding values.
+
+```         
+pivot_longer(data, cols, names_to, values_to)
+```
+
+-   data: The input data frame.
+-   cols: Columns to pivot into longer format.
+-   names_to: The name of the column that will store the column names from the original wide format.
+-   values_to: The name of the column that will store the values from the original wide format.
+
+```{r}
+BP_wide %>% 
+  pivot_longer(-subject, names_to = "when", values_to = "sbp")
+
+BP_wide %>% 
+  pivot_longer(c(before, after), names_to = "when", values_to = "sbp")
+```
+
+
+
+# On your own..
+
+Since we are working with a lot of datasets from the Tidyverse these datasets are already in the tidy format and thus pivoting is not needed. But once you combine dataset together there can be options to summarise new variables and thus could lead to pivoting.
+
+Using the package `palmerpenguins`, pivot the dataset to that all the penguin's biological measurement (bill and flipper) are in a tidy format. Use this to make visualizations that show multiple measurements together.
+
+```{r penguin}
+
+```
+
+### Baby Names
+
+-   Find the most gender neutral name
+
+-   What name saw the biggest drop from 1900 to 1950? How about from 1950 to 2000?
+
+-   Make a table that has female names that were in the top 100 in 1900, 1950, and 2000 and display their rank in all those years.
+
+-   Create a table where the rows are the first letter of a name (vowels only) and the columns are the years 1900 though 2000 by tens and the table is population with the total numbers of names beginning with the letter in the target years.
+
+-   Now create a line plot with first letter (vowels only) as the color, x axis is year, y axis is count of names beginning with each letter for ALL years in the data set.
+
+-   Same as before, but facet by sex.
+
+```{r}
+library(babynames)
+babynames
+
+```
