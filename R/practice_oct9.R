@@ -31,4 +31,8 @@ flights %>%
   ggplot() +
   geom_sf(data = us_states, fill = NA) +
   geom_sf(aes(color = n)) +
-  viridis::scale_color_viridis()
+  viridis::scale_color_viridis() +
+  xlim(c(-130, -60)) +
+  theme_void() +
+  labs(title = "NYC Flight Destimation by Volume",
+       color = "Total Flights to Location")
