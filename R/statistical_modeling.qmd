@@ -1,0 +1,468 @@
+---
+title: "Statistical Modeling"
+format:
+  html:
+    self-contained: true
+editor: visual
+editor_options: 
+  chunk_output_type: console
+---
+
+## Probability
+
+In probability theory, we explore the likelihood of events occurring. Events are defined in terms of sets, and the relationships between these sets can be used to calculate probabilities.
+
+-   **Complement Rule:**
+
+    $P(Ac)=1−P(A)P(A^c) = 1 - P(A)P(Ac)=1−P(A)$
+
+    This tells us that the probability of an event **not** happening is 1 minus the probability of the event happening.
+
+-   **Union of Events (Addition Rule):**
+
+    $P(A∪B)=P(A)+P(B)−P(A∩B)P(A \cup B) = P(A) + P(B) - P(A \cap B)P(A∪B)=P(A)+P(B)−P(A∩B)$
+
+    This formula allows us to compute the probability that **either** event A or event B occurs. We subtract the intersection, because the events A and B may overlap.
+
+-   **Independence and Joint Probability:**
+
+    $P(A∩B)=P(A)P(B)ifA⊥BP(A \cap B) = P(A)P(B) \quad \text{if} \quad A \perp BP(A∩B)=P(A)P(B)ifA⊥B$
+
+    This rule applies when events A and B are independent. The probability of both events occurring together is simply the product of their individual probabilities.
+
+-   **Law of Total Probability:**
+
+    $P(A)=P(A∣B)P(B)+P(A∣Bc)P(B)P(A) = P(A|B)P(B) + P(A|B^c)P(B)P(A)=P(A∣B)P(B)+P(A∣Bc)P(B)$
+
+    This formula breaks down the total probability of event A into two parts based on whether event B occurs or not.
+
+-   **Conditional Probability:**
+
+    $P(A∣B)=P(A∩B)P(B)P(A | B) = \frac{P(A \cap B)}{P(B)}P(A∣B)=P(B)P(A∩B)$
+
+    Conditional probability describes the likelihood of event A occurring given that event B has already occurred.
+
+-   **Bayes' Theorem:**
+
+    $P(B∣A)=P(A∣B)P(B)P(A∣B)P(B)+P(A∣Bc)P(Bc)P(B | A) = \frac{P(A | B)P(B)}{P(A | B)P(B) + P(A | B^c)P(B^c)}P(B∣A)=P(A∣B)P(B)+P(A∣Bc)P(Bc)P(A∣B)P(B)$
+
+    This is a fundamental concept in statistics, providing a way to update the probability of an event based on new evidence or data.
+
+## Distributions
+
+Distributions are functions that describe the probabilities of outcomes in a statistical experiment. There are two types of distributions: the **Probability Density Function (PDF)** and the **Cumulative Distribution Function (CDF)**.
+
+**PDF vs CDF:**
+
+-   **PDF (Probability Density Function):** The probability that a continuous random variable takes a value exactly equal to x is essentially 0; instead, the PDF provides the density of the probability at any point. In the discrete case, this is simply the probability of $X = x$
+
+-   **CDF (Cumulative Distribution Function):** The CDF represents the probability that a random variable takes a value less than or equal to $x$.
+
+CDF of X: $F(x) = P(X \le x)$
+
+PDF of X: $f(x) = P(X = x)$ ONLY IN DISCRETE CASE!
+
+Example: You can use both the PDF and CDF of the **Normal Distribution** (a common continuous distribution) to model data that follows a bell-shaped curve.
+
+```{r}
+library(tidyverse)
+x <- seq(-4,4,0.01)
+plot(x, dnorm(x), type = "l", main = "pdf Normal")
+plot(x, pnorm(x), type = "l", main = "cdf Normal")
+```
+
+Here, you plot the PDF and CDF of a Normal distribution with mean 0 and standard deviation 1.
+
+Similarly, for a **Binomial Distribution** (a discrete distribution), you can visualize the PDF and CDF, which tells you the probability of getting $x$ successes in $n$ trials.
+
+```{r}
+x <- c(0:10)
+plot(x, dbinom(x,10,0.5),  main = "pdf binomial")
+x <- seq(0,10,0.01)
+plot(x, pbinom(x,10,0.5), type = "l",  main = "cdf binomial")
+```
+
+#### Applications
+
+\- Let X \~ normal(0,1) - Let Y \~ binomial(10,0.5) - Let B \~ binomial(1,0.5) - Let Z \| B \~ normal(B, 1) - Find probability that X \> 1 give X \> 0. - That is find P(X \> 1 \| X \> 0). - Find P(Y = 5 AND -1 \< X \< 1) - Find P(Z \> 0)
+
+```{r}
+# Set the random seed for reproducibility
+set.seed(2024)
+
+# 1. Find P(X > 1 | X > 0) where X ~ normal(0,1)
+# Generate a large number of samples from N(0,1) to approximate the probability
+n <- 1e6  # Number of simulations
+X <- rnorm(n, mean = 0, sd = 1)
+
+# Calculate the conditional probability P(X > 1 | X > 0)
+p1 <- sum(X > 1 & X > 0) / sum(X > 0)
+p1
+# Output: Approximate probability
+
+# 2. Find P(Y = 5 AND -1 < X < 1)
+# where Y ~ Binomial(10, 0.5) and X ~ Normal(0,1)
+
+# Generate samples for Y from a Binomial(10, 0.5)
+Y <- rbinom(n, size = 10, prob = 0.5)
+
+# Calculate the joint probability P(Y = 5 AND -1 < X < 1)
+p5 <- sum(Y == 5 & X > -1 & X < 1) / n
+p5
+# Output: Approximate probability
+
+# 3. Find P(Z > 0) where Z | B ~ Normal(B, 1) and B ~ Binomial(1, 0.5)
+# Generate samples for B from a Binomial(1, 0.5)
+B <- rbinom(n, size = 1, prob = 0.5)
+
+# Generate Z conditional on B, so Z ~ N(B, 1)
+Z <- rnorm(n, mean = B, sd = 1)
+
+# Calculate the probability P(Z > 0)
+p0 <- mean(Z > 0)
+p0
+# Output: Approximate probability
+
+
+```
+
+-   $P(X > 1 | X > 0)$: We use conditional probability by counting instances where $X>1$ within the subset of samples where $X>0$.
+
+-   $P(Y = 5 \text{ AND } -1 < X < 1)$: We find the probability that both $Y = 5$ (a specific outcome of a binomial random variable) and X falls in the interval (−1,1).
+
+-   $P(Z > 0)$: Here, Z is generated based on a binary random variable B that shifts the mean of Z to either 0 or 1. We then compute the probability that Z is greater than 0.
+
+## Inference
+
+Statistical inference allows us to draw conclusions about a population based on a sample. The key ideas here include point estimates, confidence intervals, and hypothesis testing.
+
+#### **Point Estimates:**
+
+A **point estimate** provides a single best guess for the value of an unknown parameter (e.g., population mean). Common point estimates include the sample mean or sample median.
+
+#### **Confidence Intervals:**
+
+A **confidence interval (CI)** gives a range of plausible values for a parameter, along with a level of confidence (e.g., 95% CI means we are 95% confident the true parameter lies within this range).
+
+#### **Hypothesis Testing:**
+
+Hypothesis testing is a method for testing a claim about a population based on sample data.
+
+-   **Permutation Testing:** A non-parametric approach to hypothesis testing, where we compare the observed test statistic to a distribution of test statistics generated by resampling.
+
+-   **t-test:** A test for comparing the means of two groups, assuming the data is normally distributed.
+
+-   **Chi-squared** Test: Used to test the association between categorical variables.
+
+-   **p-values:** The p-value tells you the probability of observing data as extreme as what was observed, assuming the null hypothesis is true. A smaller p-value indicates stronger evidence against the null hypothesis.
+
+### **Simulation Studies**
+
+Simulation studies help us explore the behavior of statistical methods, such as hypothesis testing, under various conditions. For example, the following simulation code generates random samples from a normal distribution and calculates the t-statistic for each sample:
+
+Lets do some simulations about point estimates and look at their properties - sample mean vs sample median
+
+```{r}
+nsim <- 1000  # Number of simulations
+sample_size <- 30  # Sample size for each sample
+
+# Generate a tibble with mean and median from each simulation
+sim_data <- tibble(
+  sim = 1:nsim,
+  mean_result = map_dbl(1:nsim, ~ mean(rnorm(sample_size))),
+  median_result = map_dbl(1:nsim, ~ median(rnorm(sample_size)))
+)
+
+# Reshape data for easy plotting
+sim_data_long <- sim_data %>%
+  pivot_longer(cols = c(mean_result, median_result), names_to = "metric", values_to = "value")
+
+# Plot distributions of sample mean and sample median
+ggplot(sim_data_long, aes(x = value, fill = metric)) +
+  geom_histogram(alpha = 0.6, position = "identity", bins = 30) +
+  facet_wrap(~ metric) +
+  labs(title = "Distribution of Sample Mean vs Sample Median", x = "Value", y = "Frequency") +
+  theme_minimal()
+```
+
+Let's look at confidence interval coverage for a proportion.
+
+```{r}
+true_p <- 0.5  # True population proportion
+sample_size <- 100
+nsim <- 1000  # Number of simulations
+
+# Simulate confidence intervals
+ci_data <- tibble(
+  sim = 1:nsim,
+  sample_prop = map_dbl(1:nsim, ~ mean(rbinom(sample_size, 1, true_p))),
+  se = map_dbl(1:nsim, ~ sqrt((mean(rbinom(sample_size, 1, true_p)) * (1 - mean(rbinom(sample_size, 1, true_p))) / sample_size))),
+  lower_ci = sample_prop - 1.96 * se,
+  upper_ci = sample_prop + 1.96 * se
+) %>%
+  mutate(contains_true_p = (lower_ci <= true_p & upper_ci >= true_p))
+
+# Coverage proportion
+mean(ci_data$contains_true_p)
+
+# Plot confidence intervals, with intervals containing the true p in a different color
+ggplot(ci_data, aes(x = sim, y = sample_prop)) +
+  geom_errorbar(aes(ymin = lower_ci, ymax = upper_ci, color = contains_true_p), width = 0.2) +
+  geom_hline(yintercept = true_p, linetype = "dashed", color = "red") +
+  scale_color_manual(values = c("red", "blue")) +
+  labs(title = "Confidence Interval Coverage for Proportion", x = "Simulation", y = "Sample Proportion") +
+  theme_minimal()
+```
+
+Let's do hypothesis testing "by hand". We'll do a t-test by hand.
+
+```{r}
+mu0 <- 50  # Null hypothesis mean
+sample_size <- 30
+nsim <- 1000
+alpha <- 0.05
+
+# Perform hypothesis test
+t_test_data <- tibble(
+  sim = 1:nsim,
+  sample_mean = map_dbl(1:nsim, ~ mean(rnorm(sample_size, mean = 52, sd = 5))),
+  sample_sd = map_dbl(1:nsim, ~ sd(rnorm(sample_size, mean = 52, sd = 5))),
+  t_stat = (sample_mean - mu0) / (sample_sd / sqrt(sample_size)),
+  reject_null = abs(t_stat) > qt(1 - alpha / 2, df = sample_size - 1)
+)
+
+# Proportion of tests that rejected the null hypothesis
+mean(t_test_data$reject_null)
+
+# Plot distribution of t-statistics and critical regions
+ggplot(t_test_data, aes(x = t_stat, fill = reject_null)) +
+  geom_histogram(bins = 30, alpha = 0.6) +
+  geom_vline(xintercept = c(qt(1 - alpha / 2, df = sample_size - 1), -qt(1 - alpha / 2, df = sample_size - 1)), linetype = "dashed", color = "red") +
+  labs(title = "Distribution of t-Statistics with Rejection Regions", x = "t-Statistic", y = "Frequency") +
+  scale_fill_manual(values = c("blue", "red")) +
+  theme_minimal()
+```
+
+Let's do a permutation test
+
+```{r}
+group1 <- rnorm(20, mean = 5, sd = 1)
+group2 <- rnorm(20, mean = 5.5, sd = 1)
+obs_diff <- mean(group2) - mean(group1)
+
+# Perform permutation test
+perm_data <- tibble(
+  perm = 1:1000,
+  perm_diff = map_dbl(1:1000, ~ {
+    permuted <- sample(c(group1, group2))
+    mean(permuted[21:40]) - mean(permuted[1:20])
+  })
+)
+
+# Calculate p-value
+p_value <- mean(abs(perm_data$perm_diff) >= abs(obs_diff))
+
+# Plot permutation distribution and observed difference
+ggplot(perm_data, aes(x = perm_diff)) +
+  geom_histogram(bins = 30, fill = "lightblue", color = "black") +
+  geom_vline(xintercept = obs_diff, linetype = "dashed", color = "red") +
+  labs(title = "Permutation Test Distribution", x = "Difference in Means", y = "Frequency") +
+  annotate("text", x = obs_diff, y = 30, label = paste("Observed Diff =", round(obs_diff, 2)), color = "red") +
+  theme_minimal()
+```
+
+Let's talk about p-values.
+
+```{r}
+mu0 <- 0
+n <- 30
+nsim <- 1000
+
+# Simulate p-values
+p_values_data <- tibble(
+  sim = 1:nsim,
+  sample_mean = map_dbl(1:nsim, ~ mean(rnorm(n, mean = 1))),  # Mean set to 1 to test under the alternative
+  sample_sd = map_dbl(1:nsim, ~ sd(rnorm(n, mean = 1))),
+  t_stat = (sample_mean - mu0) / (sample_sd / sqrt(n)),
+  p_value = 2 * (1 - pt(abs(t_stat), df = n - 1))
+)
+
+# Plot distribution of p-values
+ggplot(p_values_data, aes(x = p_value)) +
+  geom_histogram(bins = 30, fill = "lightgreen", color = "black") +
+  labs(title = "Distribution of p-values (Alternative Hypothesis True)", x = "p-value", y = "Frequency") +
+  theme_minimal()
+
+
+```
+
+# Regression
+
+## Model Building and Analysis
+
+The overarching goal is to move from implicit knowledge in the data to explicit knowledge in a quantitative model. This facilitates a deeper understanding of the data, aids in predictions, and enhances the applicability of the model to new domains.
+
+### Partitioning Data: Patterns and Residuals
+
+A model can be conceptualized as partitioning data into patterns and residuals. Visualizations help identify patterns, which are then made precise with a model. This process iterates, replacing the original response variable with the residuals from the model. This transition from implicit knowledge to explicit models enhances generalizability and usability.
+
+### Exploring Diamond Pricing
+
+#### Identifying Patterns
+
+An initial observation indicates a surprising relationship between the quality of diamonds and their price. Lower quality diamonds exhibit higher prices.
+
+```{r}
+library(tidyverse)
+ggplot(diamonds, aes(cut, price)) + geom_boxplot()
+ggplot(diamonds, aes(color, price)) + geom_boxplot()
+ggplot(diamonds, aes(clarity, price)) + geom_boxplot()
+
+```
+
+#### Addressing Confounding Variables
+
+It looks like lower quality diamonds have higher prices because there is an important confounding variable: the weight (carat) of the diamond. The weight of the diamond is the single most important factor for determining the price of the diamond, and lower quality diamonds tend to be larger.
+
+1.  Focus on diamonds smaller than 2.5 carats (99.7% of the data)
+2.  Log-transform the carat and price variables.
+
+```{r}
+library(hexbin)
+diamonds2 <- diamonds %>% 
+  filter(carat <= 2.5) %>% 
+  mutate(lprice = log2(price), lcarat = log2(carat))
+
+ggplot(diamonds2, aes(lcarat, lprice)) + geom_hex(bins = 50)
+mod_diamond <- lm(lprice ~ lcarat, data = diamonds2)
+broom::tidy(mod_diamond)
+```
+
+#### Incorporating Categorical Variables
+
+A more complex model includes additional predictors like color, cut, and clarity, providing a comprehensive understanding of their effects.
+
+```{r}
+mod_diamond2 <- lm(lprice ~ lcarat + color + cut + clarity, data = diamonds2)
+broom::tidy(mod_diamond2)
+```
+
+#### Broom
+
+Used to tidy up modeling output. <https://broom.tidymodels.org/>
+
+-   tidy
+-   augment
+-   glance
+
+## Many Models
+
+### Fundamentals
+
+1.  **Using Many Simple Models**: Employing a multitude of simple models aids in comprehending intricate datasets.
+2.  **List-Columns**: Leveraging list-columns to store diverse data structures within a data frame, such as a column containing linear models.
+3.  **Broom Package**: Utilizing the broom package by David Robinson to convert models into tidy data, enabling the application of various analysis techniques.
+
+### gapminder
+
+The [gapminder](https://cran.r-project.org/web/packages/gapminder/readme/README.html) data summarises the progression of countries over time, looking at statistics like life expectancy and GDP. Let's focus addressing: "How does life expectancy change over time for each country?" Initial plots are hard to interpret due to the dataset's size. To address this, linear models are fitted to each country to identify trends.
+
+#### ModelR
+
+Piping within the tidyverse and modeling <https://modelr.tidyverse.org/>
+
+```{r}
+library(modelr)
+library(gapminder)
+gapminder
+
+gapminder %>% 
+  ggplot(aes(year, lifeExp, group = country)) +
+    geom_line(alpha = 1/3)
+
+# Example with New Zealand
+nz <- filter(gapminder, country == "New Zealand")
+nz_mod <- lm(lifeExp ~ year, data = nz)
+## can't look at all countries
+```
+
+### Nested data
+
+To fit models to every country efficiently, we use nested data frames, which group data by country and continent.
+
+```{r}
+by_country <- gapminder %>% 
+  group_by(country, continent) %>% 
+  nest()
+by_country
+```
+
+### List-Columns
+
+A model-fitting function is defined, and the map function is used to apply it to each country's data. The resulting models are stored as list-columns in the data frame.
+
+```{r}
+country_model <- function(df) {
+  lm(lifeExp ~ year, data = df)
+}
+
+by_country <- by_country %>% 
+  mutate(model = map(data, country_model))
+
+```
+
+### Unnesting
+
+Residuals are computed for each model-data pair, and the nested data frame is transformed into a regular data frame using unnest.
+
+```{r}
+by_country <- by_country %>% 
+  mutate(
+    resids = map2(data, model, add_residuals)
+  )
+by_country
+
+resids <- unnest(by_country, resids)
+resids
+
+resids %>% 
+  ggplot(aes(year, resid)) +
+    geom_line(aes(group = country), alpha = 1 / 3) + 
+    geom_smooth(se = FALSE)
+
+## by continent
+resids %>% 
+  ggplot(aes(year, resid, group = country)) +
+    geom_line(alpha = 1 / 3) + 
+    facet_wrap(~continent)
+```
+
+### Model Quality
+
+The broom package is introduced for assessing model quality. The glance function is applied to extract model quality metrics, providing insights into model performance.
+
+```{r}
+glance <- by_country %>% 
+  mutate(glance = map(model, broom::glance)) %>% 
+  unnest(glance, .drop = TRUE)
+
+glance
+
+
+glance %>% 
+  arrange(r.squared)
+
+bad_fit <- filter(glance, r.squared < 0.25)
+
+gapminder %>% 
+  semi_join(bad_fit, by = "country") %>% 
+  ggplot(aes(year, lifeExp, colour = country)) +
+    geom_line()
+```
+
+------------------------------------------------------------------------
+
+On your Own...
+
+1.  Diamonds - use color cut and clarity to model price. (log transform if needed and analyze residuals and diagnostics).
+2.  Gapminder - predict life expantancy by continent (analyze fully)
