@@ -1,0 +1,360 @@
+---
+title: "Interactive Data Viz"
+format:
+  html:
+    self-contained: true
+editor: visual
+editor_options: 
+  chunk_output_type: console
+---
+
+# Introduction to Plotly
+
+## Overview of How `Plotly` Works
+
+`Plotly` is a powerful library in R for creating interactive plots and dashboards. It provides an interface to the Plotly.js JavaScript library, allowing users to create a wide variety of visualizations, including scatter plots, line plots, bar charts, and more. One of its strengths is the ability to combine flexibility with interactivity, making it suitable for exploratory data analysis and creating dashboards.
+
+At its core, Plotly revolves around **"traces"** (data series) and **"layouts"** (plot aesthetics). These elements are combined to produce complete, interactive visualizations.
+
+## Basics - How Plotly Works
+
+1.  Data Representation with Traces: A trace is a single data series. Each trace defines:
+
+-   Data: Values for the x-axis, y-axis, or other dimensions.
+-   Type: The type of plot (e.g., scatter, bar, boxplot).
+-   Styling Options: Colors, markers, line styles, etc.
+
+2.  Plot Composition: Traces are added to a `plot_ly()` object using the `add_trace()` or specific functions like `add_lines()`, `add_markers()`, etc.
+
+3.  Customizing with Layouts: The layout defines the overall appearance of the plot, such as:
+
+-   Titles and labels (plot title, axis titles, legend title).
+-   Background and gridline styles.
+-   Annotations or reference lines.
+
+4.  Interactivity: All Plotly plots are interactive by default, enabling features like:
+
+-   Hover info: Displaying data values when the mouse hovers over a point.
+-   Zoom and pan: Adjusting the visible range of the plot.
+-   Legends: Allowing users to show or hide specific traces.
+
+5.  Programmatic Flexibility: Plotly objects are R lists, so you can modify them programmatically, enabling advanced customization.
+
+## Key Variables and Arguments
+
+#### **1. Data-Related Arguments**
+
+-   `x`, `y`, `z`: Define the data for the x-axis, y-axis, and (for 3D plots) z-axis.
+
+-   `color`: Groups or colors data points by a categorical variable.
+
+-   `size`: Adjusts marker size based on a numerical variable.
+
+#### **2. Trace Type**
+
+-   `type`: Specifies the type of plot (e.g., `"scatter"`, `"bar"`, `"box"`, `"heatmap"`, `"surface"`).
+
+-   `mode`: Controls how data points are displayed (e.g., `"lines"`, `"markers"`, `"lines+markers"` for scatter plots).
+
+#### **3. Layout Customization**
+
+-   `title`: Title of the plot (can also include subtitles).
+
+-   `xaxis`, `yaxis`: List elements to customize axis labels, scales, and gridlines.
+
+    -   `title`: Sets the axis title.
+
+    -   `range`: Defines the visible range for the axis.
+
+    -   `tickformat`: Customizes how ticks are displayed (e.g., dates or percentages).
+
+#### **4. Appearance**
+
+-   `marker`: Controls marker properties (size, color, opacity).
+
+-   `line`: Adjusts line properties (color, width, dash style).
+
+-   `plot_bgcolor` and `paper_bgcolor`: Set background colors for the plot and the canvas.
+
+#### **5. Legends and Hover Options**
+
+-   `showlegend`: Boolean, whether to display a legend.
+
+-   `hoverinfo`: Defines what information appears on hover (e.g., "x+y+text").
+
+-   `text`: Adds custom text annotations to hover info.
+
+```{r}
+# Load necessary libraries
+library(plotly)
+library(palmerpenguins)
+library(tidyverse)
+
+# Create a simple line plot
+fig <- plot_ly() %>%
+  add_lines(x = c("A", "B", "C"), y = c(1, 3, 2)) %>%
+  layout(
+    title = "Sample Line Plot", # Title of the plot
+    xaxis = list(title = "X-axis"), # Label for the x-axis
+    yaxis = list(title = "Y-axis"), # Label for the y-axis
+    plot_bgcolor = "#c7daec" # Set the background color
+  )
+
+# Display the plot
+fig
+
+```
+
+Plotly objects are lists, so you can modify them directly.
+
+```{r}
+str(fig)
+fig$x$attrs[[2]]
+# Update the y-values of a line plot programmatically
+fig$x$attrs[[2]]$y <- c(3, 2, 1) # Modify y-values
+
+# Display the updated plot
+fig
+
+```
+
+## Build a plot as a list
+
+You can define plots as R lists, which is useful for advanced customizations or when working with JSON-like structures.
+
+```{r}
+# Build a bar plot using a list
+fig <- list(
+  data = list(
+    list(
+      x = c(1, 2, 3),
+      y = c(1, 3, 2),
+      type = "bar" # Specify the plot type
+    )
+  ),
+  layout = list(
+    title = "Bar Plot Using Lists",
+    plot_bgcolor = "#e5ecf6",
+    xaxis = list(
+      zerolinecolor = "#ffff",
+      zerolinewidth = 2,
+      gridcolor = "ffff"
+    ),
+    yaxis = list(
+      zerolinecolor = "#ffff",
+      zerolinewidth = 2,
+      gridcolor = "ffff"
+    )
+  )
+)
+
+# Render the plot using plotly_build()
+plotly_build(fig)
+
+```
+
+### Build a plot with `plot_ly` rather than a list.
+
+```{r}
+library(plotly) 
+
+fig <- plot_ly(x = c(1, 2, 3), y = c(1, 3, 2), type = 'bar')%>% 
+  layout(title = 'A Plotly Figure',
+         plot_bgcolor='#e5ecf6', 
+         xaxis = list( 
+           zerolinecolor = '#ffff', 
+           zerolinewidth = 2, 
+           gridcolor = 'ffff'), 
+         yaxis = list( 
+           zerolinecolor = '#ffff', 
+           zerolinewidth = 2, 
+           gridcolor = 'ffff')) 
+fig
+```
+
+## Plotting with Data
+
+```{r}
+# Load the penguins dataset
+data("penguins", package = "palmerpenguins")
+
+# Create a scatter plot of flipper length vs. bill length, colored by species
+fig <- plot_ly(
+  data = penguins, 
+  x = ~bill_length_mm, 
+  y = ~flipper_length_mm, 
+  color = ~species, # Color points by species
+  type = "scatter", 
+  mode = "markers"
+) %>%
+  layout(
+    title = "Flipper Length vs. Bill Length", 
+    legend = list(title = list(text = "Species")), # Add a legend title
+    plot_bgcolor = "#e5ecf6",
+    xaxis = list(
+      zerolinecolor = "#ffff",
+      zerolinewidth = 2,
+      gridcolor = "ffff"
+    ),
+    yaxis = list(
+      zerolinecolor = "#ffff",
+      zerolinewidth = 2,
+      gridcolor = "ffff"
+    )
+  )
+
+# Display the scatter plot
+fig
+
+```
+
+### Scatterplots
+
+```{r}
+library(plotly)
+
+fig <- plot_ly(data = iris, x = ~Sepal.Length, y = ~Petal.Length, type = "scatter", mode = "markers")
+
+fig
+```
+
+#### Adding Multiple Lines (Trace)
+
+```{r}
+# Generate random data for multiple traces
+trace_0 <- rnorm(100, mean = 5)
+trace_1 <- rnorm(100, mean = 0)
+trace_2 <- rnorm(100, mean = -5)
+x <- c(1:100)
+
+# Create a data frame to store the data
+data <- data.frame(index = x, trace_0, trace_1, trace_2)
+
+# Add multiple traces to a single plot
+fig <- plot_ly(data, x = ~index) %>%
+  add_trace(y = ~trace_0, name = "Trace 0", mode = "lines") %>%
+  add_trace(y = ~trace_1, name = "Trace 1", mode = "lines+markers") %>%
+  add_trace(y = ~trace_2, name = "Trace 2", mode = "markers")
+
+# Display the plot
+fig
+
+```
+
+## Integrating Plotly with `ggplot2`
+
+You can convert `ggplot2` objects into interactive Plotly visualizations using the `ggplotly()` function.
+
+```{r}
+library(tidyverse)
+library(mdsr)
+library(babynames)
+Beatles <- babynames %>%
+  filter(name %in% c("John", "Paul", "George", "Ringo") & sex == "M") %>%
+  mutate(name = factor(name, levels = c("John", "George", "Paul", "Ringo")))
+beatles_plot <- ggplot(data = Beatles, aes(x = year, y = n)) +
+  geom_line(aes(color = name), size = 2)
+
+beatles_plot
+
+ggplotly(beatles_plot)
+```
+
+## Interactive Tables with `DT`
+
+For interactive tables, use the `DT` package. This is helpful when displaying tabular data alongside visualizations.
+
+```{r}
+library(DT)
+?datatable
+datatable(Beatles, options = list(pageLength = 10))
+```
+
+## Time-Series Visualization with `Dygraphs`
+
+The `dygraphs` package is great for interactive time-series visualizations.
+
+```{r}
+library(dygraphs)
+Beatles %>% 
+  filter(sex == "M") %>% 
+  select(year, name, prop) %>%
+  pivot_wider(names_from = name, values_from = prop) %>%
+  dygraph(main = "Popularity of Beatles names over time") %>% 
+  dyRangeSelector(dateWindow = c("1900", "1980"))
+```
+
+# In class exercises
+
+Using the CTA Ridership data from the midterm create an interactive data visualization
+
+-   Bar plot - average rides by day of the week - filter for different lines?
+
+-   Line plot - daily rides by each train line (color lines by train color)
+
+-   Shiny ??
+
+### **Basic Structure of a Shiny App**
+
+A basic Shiny app has three key sections:
+
+1.  **`ui` (User Interface):** Defines the layout and appearance.
+
+2.  **`server`:** Contains the logic for dynamic content.
+
+3.  **`shinyApp()`:** Combines `ui` and `server` to create the app.
+
+```         
+
+library(shiny)
+
+# Define the UI
+ui <- fluidPage(
+  titlePanel("Hello Shiny!"),                # App title
+  sidebarLayout(
+    sidebarPanel(
+      sliderInput("num", "Choose a number:", # A slider input widget
+                  min = 1, max = 100, value = 50)
+    ),
+    mainPanel(
+      plotOutput("hist")                     # Output: A plot
+    )
+  )
+)
+
+# Define the Server
+server <- function(input, output) {
+  output$hist <- renderPlot({                # Generate plot based on input
+    hist(rnorm(input$num), main = "Histogram", col = "blue")
+  })
+}
+
+# Combine UI and Server
+shinyApp(ui = ui, server = server)
+```
+
+### **Key Concepts**
+
+1.  **Inputs:** Widgets like sliders, text boxes, and dropdown menus allow users to send values to the server.
+
+    -   Example: `sliderInput("num", ...)` lets users select a number.
+
+2.  **Reactive Expressions:** Automatically update outputs when inputs change.
+
+    -   Example: `renderPlot()` generates a new plot every time `input$num` changes.
+
+3.  **Outputs:** Display results, such as plots, tables, or text, in the UI.
+
+    -   Example: `plotOutput("hist")` displays the plot generated in `output$hist`.
+
+4.  **Layouts:** Define how the app is organized (e.g., sidebars, tabs, or fluid pages).
+
+### **Why Use Shiny?**
+
+-   **Interactivity:** Users can explore data and adjust inputs dynamically.
+
+-   **Web Integration:** Apps run in any web browser, making them easily shareable.
+
+-   **Flexibility:** Works seamlessly with R libraries like `ggplot2`, `plotly`, and `DT` for rich visualizations and tables.
+
+With just a few lines of code, Shiny turns R scripts into fully functional web apps!
