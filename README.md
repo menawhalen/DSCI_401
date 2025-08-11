@@ -9,8 +9,6 @@ This is the class repository for Dr. Whalen's DSCI 401 class in fall of 2025.
 2. Set up the virtual environment for class exactly as before:
 
 ```bash
-Copy
-Edit
 cd path/to/DSCI_401
 python -m venv venv
 source venv/bin/activate  # Mac/Linux
