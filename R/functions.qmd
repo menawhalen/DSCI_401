@@ -24,7 +24,7 @@ Example: "data/file.csv"
 
 The working directory is the location on your computer where R is currently operating. When you read or write files, R will look for them in this directory by default. This makes it important to set your working directory to the right location, especially when working with data files.
 
-You can use the `getwd()` function to check your current working directory, and the `setwd()` function to set a new working directory.
+You can use the `getwd()` function to check your current working directory, and the `setwd()` function to set a new working directory. Do not recommend...
 
 ```         
 # Check the current working directory getwd()  # Set a new working directory setwd("path/to/your/new/directory")
@@ -39,6 +39,50 @@ It's a good practice to organize your data in a separate folder within your R pr
 -   Create a Data Folder: In your R project directory, create a folder named "data" to store your datasets.
 
 -   Place Data Files: Put your dataset files (CSV, Excel, etc.) inside the "data" folder.
+
+### Here Package
+
+File paths in R often break when you switch computers, change folders, or share code with others. Especially when you don't know their file structure.
+
+Example of a brittle path:
+```
+read_csv("/Users/mena/Downloads/data.csv")
+```
+What `here()` does:
+
+- Automatically finds the root of your project (where your .Rproj file or Git repo is).
+
+- Builds file paths relative to that root, so you don’t have to type long paths.
+
+- This makes your code portable and reproducible.
+
+In an example work flow
+```
+my_project/
+├── data/
+│   └── survey.csv
+├── scripts/
+│   └── analysis.R
+└── my_project.Rproj
+```
+
+You could use code:
+```
+library(here)
+data <- read_csv(here("data", "survey.csv"))
+```
+`here()` returns the full pathway like
+```
+"/Users/mena/OneDrive/my_project/data/survey.csv"
+```
+
+This is helpful when working with collaborations where you don't know where they are working beyond the project, especially across Mac, Windows, Linux systems.
+
+#### Activity
+
+1. Get into groups 2-3
+2. Everyone download some type of datafile (csv)
+3. One member load the data using `read.csv()` from the downloads folder. Another member place it into the data folder and load the data. Swap code and run. (Check working directory)
 
 ## Loops and Conditional Statements
 
@@ -192,7 +236,7 @@ check_even_odd(71)
 check_even_odd(51)
 ```
 
-## Exercise! 
+## Exercise!
 
 The height of a lego brick is 9.6 mm. We want to build a tower at a height closest to x m.(Remember 1000 mm in a m.)
 
