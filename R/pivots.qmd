@@ -1,5 +1,5 @@
 ---
-title: "Pivoting adn Tidy Data"
+title: "Pivoting and Tidy Data"
 format:
   html:
     self-contained: true
@@ -85,8 +85,6 @@ BP_wide %>%
   pivot_longer(c(before, after), names_to = "when", values_to = "sbp")
 ```
 
-
-
 # On your own..
 
 Since we are working with a lot of datasets from the Tidyverse these datasets are already in the tidy format and thus pivoting is not needed. But once you combine dataset together there can be options to summarise new variables and thus could lead to pivoting.
@@ -116,3 +114,22 @@ library(babynames)
 babynames
 
 ```
+
+
+### CTA STOPS
+
+Let’s look at a real dataset that isn’t tidy: the CTA Stops file.
+
+Each row represents a stop, and multiple columns indicate whether that stop is part of a given train line.
+
+```{r}
+stops <- read_csv("../data/CTA_stops.csv")
+glimpse(stops)
+
+```
+
+
+Notice the line columns: RED, BLUE, G, BRN, P, Pexp, Y, Pnk, O.
+
+Each of these columns represents the same variable — “train line” — but spread across many columns.
+
