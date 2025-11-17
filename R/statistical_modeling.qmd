@@ -197,8 +197,8 @@ ci_data <- tibble(
   sim = 1:nsim,
   sample_prop = map_dbl(1:nsim, ~ mean(rbinom(sample_size, 1, true_p))),
   se = map_dbl(1:nsim, ~ sqrt((mean(rbinom(sample_size, 1, true_p)) * (1 - mean(rbinom(sample_size, 1, true_p))) / sample_size))),
-  lower_ci = sample_prop - 1.96 * se,
-  upper_ci = sample_prop + 1.96 * se
+  lower_ci = sample_prop - qnorm(0.05, lower.tail = F) * se,
+  upper_ci = sample_prop + qnorm(0.05, lower.tail = F) * se
 ) %>%
   mutate(contains_true_p = (lower_ci <= true_p & upper_ci >= true_p))
 
@@ -295,6 +295,120 @@ ggplot(p_values_data, aes(x = p_value)) +
 
 
 ```
+
+## Infer Package
+
+The [infer](https://infer.tidymodels.org/index.html) package provides a tidy, grammar-based framework for statistical inference. It allows you to conduct hypothesis tests, bootstrap intervals, and permutation tests using a pipeline that mirrors the logic of statistical reasoning:
+
+1. Specify the variable(s) involved
+
+2. Hypothesize the null model
+
+3. Generate resamples under the null
+
+4. Calculate the test statistic
+
+5. Visualize the distribution
+
+6. Get the p-value or confidence interval
+
+
+### Grammar of `infer`
+
+```
+data %>%
+  specify(response ~ explanatory) %>%     # variables
+  hypothesize(null = "independence") %>%  # form of null
+  generate(reps = 1000, type = "permute") %>%   # how to simulate
+  calculate(stat = "diff in means")       # test statistic
+
+```
+
+- `specify()` allows you to specify the variable, or relationship between variables, that you’re interested in.
+
+- `hypothesize()` allows you to declare the null hypothesis.
+
+- `generate()` allows you to generate data reflecting the null hypothesis.
+
+- `calculate()` allows you to calculate a distribution of statistics from the generated data to form the null distribution.
+
+
+#### Permutation Test
+
+```{r}
+library(infer)
+
+group1 <- rnorm(20, mean = 5, sd = 1)
+group2 <- rnorm(20, mean = 5.5, sd = 1)
+
+df <- tibble(
+  value = c(group1, group2),
+  group = rep(c("A", "B"), each = 20)
+)
+
+obs_diff <- df %>%
+  specify(value ~ group) %>%
+  calculate(stat = "diff in means", order = c("B", "A"))
+
+
+perm_dist <- df %>%
+  specify(value ~ group) %>%
+  hypothesize(null = "independence") %>%
+  generate(reps = 1000, type = "permute") %>%
+  calculate(stat = "diff in means", order = c("B", "A"))
+
+
+perm_dist %>%
+  get_p_value(obs_stat = obs_diff, direction = "two_sided")
+
+# Plot
+perm_dist %>%
+  visualize() +
+  shade_p_value(obs_stat = obs_diff, direction = "two_sided")
+
+
+```
+
+
+#### Bootstrap
+
+```{r}
+prop_df <- tibble(
+  response = factor(rbinom(100, size = 1, prob = 0.5), levels = c(0,1))
+)
+
+boot_dist <- prop_df %>%
+  specify(response ~ NULL, success = "1") %>%
+  generate(reps = 1000, type = "bootstrap") %>%
+  calculate(stat = "prop")
+
+boot_dist %>%
+  get_ci(level = 0.95, type = "percentile")
+
+
+```
+
+
+#### One-sample simulation
+
+```{r}
+x <- rnorm(40, mean = 52, sd = 5)
+df <- tibble(x = x)
+
+obs_mean <- df %>% 
+  specify(x ~ NULL) %>% 
+  calculate(stat = "mean")
+
+null_dist <- df %>%
+  specify(x ~ NULL) %>%
+  hypothesize(null = "point", mu = 50) %>%
+  generate(reps = 1000, type = "bootstrap") %>%   # simulate sampling variation
+  calculate(stat = "mean")
+
+get_p_value(null_dist, obs_stat = obs_mean, direction = "two_sided")
+
+```
+
 
 # Regression
 
